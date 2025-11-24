@@ -1,11 +1,10 @@
-#include <fstream>
-#include <iostream>
+#include "spdlog/spdlog.h"
 #include <string>
 
 int main(int argc, char **argv) {
 
   if (argc < 3) {
-    std::cerr << "Usage: program <filename> <output filename>\n";
+    spdlog::error("Usage: program <filename> <output filename>");
     return 1;
   }
 

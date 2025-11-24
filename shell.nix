@@ -8,5 +8,7 @@ in
       pkgs.meson
       pkgs.ninja
       pkgs.gcc
+      pkgs.spdlog
+      pkgs.fmt
     ];
   }
