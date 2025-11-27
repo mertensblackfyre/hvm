@@ -1,2 +1,5 @@
 push argument 0
-pop constant 2
+push constant 2
+sub
+add
+pop temp 1
