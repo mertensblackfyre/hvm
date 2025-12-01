@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
   for (auto ll : parse.commands) {
     if (ll.first == MEMORY) {
       ParserMemory p = parse.parse_memory_commands(ll.second);
-      translator.translate_memory_commands(p);
+      translator.translate_memory_commands(p, input);
     };
   };
   return 0;
