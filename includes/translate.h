@@ -16,16 +16,17 @@
 using fmt::print;
 using fmt::println;
 
+
 class Translator {
 private:
   std::string fname;
   std::ofstream output_file;
   std::unordered_map<std::string, std::string> memory_commands_reference = {
-      {"push", "@SP\nM=M+1\n"},
-      {"pop", "@SP\nM=M-1\n"},
-      {"stack", "@SP\nA=M\nD=M\n"},
+      {"increment_stack", "@SP\nM=M+1\n"},
+      {"decrement_stack", "@SP\nM=M-1"},
+      {"stack", "@SP\nA=M\nM=D\n"},
       {"value", "\nD=A\n"},
-      {"local", "@LCL\nM=M+"},
+      {"local", "@LCL\nD=M\nD=M+D"},
       {"argument", "@ARG\nM=M+"},
       {"this", "@THIS\nM=M+"},
       {"that", "@THAT\nM=M+"},
@@ -84,22 +85,26 @@ Translator::translate_handle_destination(const std::string &destination) {
   return memory_commands_reference["stack"];
 };
 
-
 /**
- * This functions handles commands like `local`, 'argument', 'this', and 'that'
- *
- * Eg.
- * push segment i (addr=segmentPointer + i, *SP=*addr, SP++)
  *
  *
  *
+                   @LCL
+                   D=M
+                   @{index}
+                   D=D+A
+                   A=D
+                   D=M
+                   @SP
+                   A=M
+                   M=D
+                   @SP
+                   M=M+1
+                   """
  *
  *
  *
- *
- *
- *
- */
+ **/
 std::string Translator::translate_handle_locals(const std::string &destination,
                                                 const std::string &value) {
 
