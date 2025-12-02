@@ -19,7 +19,7 @@ struct ParserMemory {
   std::string destination{};
 };
 
-enum Type { MEMORY, LOGICAL };
+enum Types { MEMORY, LOGICAL };
 
 class Parser {
 
