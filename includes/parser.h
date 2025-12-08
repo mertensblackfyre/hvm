@@ -8,6 +8,7 @@
 #include <fmt/base.h>
 #include <fstream>
 #include <iostream>
+#include <spdlog/details/os-inl.h>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -19,7 +20,7 @@ struct ParserMemory {
   std::string destination{};
 };
 
-enum Types { MEMORY, LOGICAL };
+enum class Types { MEMORY, LOGICAL };
 
 class Parser {
 
@@ -48,14 +49,18 @@ public:
 };
 
 void Parser::parse_read_file() {
+
+  int type = 0;
   while (std::getline(input_file, line)) {
     std::string ll = parse_instruction(line);
     if (helper_get_first_word(ll) == "push" ||
         helper_get_first_word(ll) == "pop") {
-      std::pair<int, std::string> w = {MEMORY, ll};
+      type = static_cast<int>(Types::MEMORY);
+      std::pair<int, std::string> w = {type, ll};
       commands.emplace_back(w);
     } else {
-      std::pair<int, std::string> w = {LOGICAL, ll};
+      type = static_cast<int>(Types::LOGICAL);
+      std::pair<int, std::string> w = {type, ll};
       commands.emplace_back(w);
     }
   };
