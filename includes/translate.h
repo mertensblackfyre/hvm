@@ -16,20 +16,25 @@
 using fmt::print;
 using fmt::println;
 
-
 class Translator {
 private:
   std::string fname;
   std::ofstream output_file;
   std::unordered_map<std::string, std::string> memory_commands_reference = {
-      {"increment_stack", "@SP\nM=M+1\n"},
-      {"decrement_stack", "@SP\nM=M-1"},
+
+      // pop & push
+      {"push", "@SP\nM=M+1\n"},
+      {"pop", "@SP\nM=M-1\nA=M\nD=M\n@13\nA=M\nM=D"},
+      {"index", "\nD=A\n"},
       {"stack", "@SP\nA=M\nM=D\n"},
-      {"value", "\nD=A\n"},
-      {"local", "@LCL\nD=M\nD=M+D"},
-      {"argument", "@ARG\nM=M+"},
-      {"this", "@THIS\nM=M+"},
-      {"that", "@THAT\nM=M+"},
+
+      // Locals
+      {"local", "@LCL\nA=M+D\nD=M\n"},
+      {"argument", "@ARG\nA=M+D\nD=M\n"},
+      {"this", "@THIS\nA=M+D\nD=M\n"},
+      {"that", "@THAT\nA=M+D\nD=M\n"},
+
+      // static
       {"static", "M=D"},
   };
 
@@ -57,10 +62,13 @@ private:
   translate_handle_destination(const std::string &destination);
 
   inline std::string translate_handle_locals(const std::string &destination,
-                                             const std::string &value);
+                                             const std::string &value,
+                                             const std::string &command);
   inline std::string translate_handle_static(const std::string &fname,
                                              const std::string &value,
                                              const std::string &destination);
+
+  inline std::string translate_handle_constant(const std::string &value);
 };
 
 void Translator::translate_append_file(std::string_view line) {
@@ -77,7 +85,7 @@ std::string Translator::translate_handle_stack(const std::string &command) {
 };
 
 std::string Translator::translate_handle_value(const std::string &value) {
-  return "@" + value + memory_commands_reference["value"];
+  return "@" + value + memory_commands_reference["index"];
 };
 
 std::string
@@ -85,34 +93,31 @@ Translator::translate_handle_destination(const std::string &destination) {
   return memory_commands_reference["stack"];
 };
 
-/**
- *
- *
- *
-                   @LCL
-                   D=M
-                   @{index}
-                   D=D+A
-                   A=D
-                   D=M
-                   @SP
-                   A=M
-                   M=D
-                   @SP
-                   M=M+1
-                   """
- *
- *
- *
- **/
 std::string Translator::translate_handle_locals(const std::string &destination,
-                                                const std::string &value) {
-
-  std::string dest_asm = memory_commands_reference[destination] + value + "\n";
+                                                const std::string &value,
+                                                const std::string &command) {
+  if (command == "push") {
+    std::string asm_index = translate_handle_value(value);
+    std::string asm_local = memory_commands_reference[destination];
+    std::string asm_stack = memory_commands_reference["stack"];
+    std::string asm_op = memory_commands_reference["push"];
+    return asm_index + asm_local + asm_stack + asm_op + "\n";
+  } else {
+    std::string asm_index = translate_handle_value(value);
+    std::string asm_local = memory_commands_reference[destination];
+    std::string asm_op = memory_commands_reference["pop"];
+    return asm_index + asm_local + asm_op + "\n";
+  }
+  return "";
 };
-/*
 std::string Translator::translate_handle_constant(const std::string &value) {
-  std::string dest_asm = memory_commands_reference[""] + value_asm + "\n";
+
+  std::string asm_index = translate_handle_value(value);
+  std::string asm_constant = memory_commands_reference["constant"];
+  std::string asm_stack = memory_commands_reference["stack"];
+  std::string asm_op = memory_commands_reference["push"];
+
+  return asm_index + asm_constant + asm_stack + asm_op + "\n";
 };
 
 std::string
@@ -124,8 +129,9 @@ Translator::translate_handle_static(const std::string &fname,
   std::string s = fname.substr(0, pos);
   std::string dest_asm = "@" + s + "." + value + "\n" +
                          memory_commands_reference[destination] + value + "\n";
+
+  return "";
 };
-*/
 void Translator::translate_memory_commands(ParserMemory command,
                                            const std::string &fname) {
 
@@ -140,16 +146,12 @@ void Translator::translate_memory_commands(ParserMemory command,
 
   if (command.destination == "local" || command.destination == "that" ||
       command.destination == "this" || command.destination == "argument") {
-    translate_handle_locals(command.destination, command.value);
+    std::string final_asm = translate_handle_locals(
+        command.destination, command.value, command.command);
+    translate_append_file(final_asm);
   } else if (command.destination == "constant") {
+    std::string final_asm = translate_handle_constant(command.value);
   }
 
-  /*
-     *
-     *
-     *  std::string dest_asm =
-          memory_commands_reference[command.destination] + command.value + "\n";
-      translate_append_file(dest_asm);
-     *
-     */
+  return;
 };

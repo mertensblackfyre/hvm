@@ -1,6 +1,7 @@
 #include "includes/parser.h"
 #include "includes/translate.h"
 #include "spdlog/spdlog.h"
+#include <cstdlib>
 #include <fmt/base.h>
 #include <string>
 
@@ -24,5 +25,5 @@ int main(int argc, char **argv) {
       translator.translate_memory_commands(p, input);
     };
   };
-  return 0;
+  return EXIT_SUCCESS;
 }
