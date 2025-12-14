@@ -49,7 +49,6 @@ private:
       {"1_push", "@THAT\nA=M\nD=M\n"},
       {"0_pop", "@THIS\nA=D\n"},
       {"1_pop", "@THAT\nA=D\n"},
-
   };
 
 public:

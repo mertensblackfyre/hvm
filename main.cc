@@ -1,5 +1,6 @@
+#include "includes/logic_translate.h"
+#include "includes/memory_translate.h"
 #include "includes/parser.h"
-#include "includes/translate.h"
 #include "spdlog/spdlog.h"
 #include <cstdlib>
 #include <fmt/base.h>
@@ -16,7 +17,8 @@ int main(int argc, char **argv) {
   std::string output = argv[2];
 
   Parser parse(input);
-  Translator translator(output);
+  MemoryTranslator translator(output);
+  LogicTranslator ltranslator(output);
   parse.parse_read_file();
 
   for (auto ll : parse.commands) {
