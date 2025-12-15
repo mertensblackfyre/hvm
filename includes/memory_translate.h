@@ -188,7 +188,7 @@ void MemoryTranslator::translate_memory_commands(ParserMemory command,
     final_asm += translate_handle_pointer(command.value, command.command);
   }
 
-  translate_append_file(comment);
-  translate_append_file(final_asm);
+  Translator::translate_append_file(comment);
+  Translator::translate_append_file(final_asm);
   return;
 };

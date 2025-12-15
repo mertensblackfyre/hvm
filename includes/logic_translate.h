@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "spdlog/spdlog.h"
 #include "translate1.h"
+#include <fmt/base.h>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -33,10 +34,11 @@ void LogicTranslator::translate_logic_commands(const std::string &command) {
 
   std::string comment = "// " + command + "\n";
   std::string final_asm = "";
+
   if (command == "add" || command == "sub") {
-    final_asm = translate_operations(command);
+    final_asm += translate_operations(command);
   }
 
-  translate_append_file(comment);
-  translate_append_file(final_asm);
+  Translator::translate_append_file(comment);
+  Translator::translate_append_file(final_asm);
 }

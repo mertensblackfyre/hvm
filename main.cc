@@ -22,15 +22,12 @@ int main(int argc, char **argv) {
   parse.parse_read_file();
 
   for (auto ll : parse.commands) {
-    fmt::println("{}", ll.first);
     if (ll.first == static_cast<int>(Types::MEMORY)) {
       ParserMemory p = parse.parse_memory_commands(ll.second);
       translator.translate_memory_commands(p, input);
-      continue;
     };
     if (ll.first == static_cast<int>(Types::LOGICAL)) {
       ltranslator.translate_logic_commands(ll.second);
-      continue;
     };
   };
   return EXIT_SUCCESS;
