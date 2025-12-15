@@ -58,7 +58,7 @@ void Parser::parse_read_file() {
       type = static_cast<int>(Types::MEMORY);
       std::pair<int, std::string> w = {type, ll};
       commands.emplace_back(w);
-    } else {
+    } else if (ll == "add" || ll == "sub") {
       type = static_cast<int>(Types::LOGICAL);
       std::pair<int, std::string> w = {type, ll};
       commands.emplace_back(w);

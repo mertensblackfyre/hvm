@@ -20,11 +20,22 @@ protected:
   };
 
 public:
-  Translator(const std::string &file_name)
-      : output_file(file_name, std::ios::app) {
-    if (!output_file.is_open())
-      spdlog::error("Error opening file");
+  Translator(const std::string &file_name) {
+
+    if (output_file.is_open()) {
+      spdlog::info("File already open");
+    }
+    if (!output_file.is_open()) {
+      output_file.open(file_name, std::ios::app);
+    };
+    if (output_file.fail()) {
+      spdlog::error("Error: ios::failbit");
+    }
+    if (output_file.bad()) {
+      spdlog::error("Error: ios::badbit");
+    }
   }
+
   ~Translator() {
     if (output_file.is_open())
       output_file.close();
