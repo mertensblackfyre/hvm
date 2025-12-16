@@ -17,18 +17,23 @@ int main(int argc, char **argv) {
   std::string output = argv[2];
 
   Parser parse(input);
-  MemoryTranslator translator(output);
-  LogicTranslator ltranslator(output);
+  MemoryTranslator memory_translate(output);
+  LogicTranslator logic_translate(output);
   parse.parse_read_file();
 
   for (auto ll : parse.commands) {
-    if (ll.first == static_cast<int>(Types::MEMORY)) {
-      ParserMemory p = parse.parse_memory_commands(ll.second);
-      translator.translate_memory_commands(p, input);
-    };
-    if (ll.first == static_cast<int>(Types::LOGICAL)) {
-      ltranslator.translate_logic_commands(ll.second);
-    };
+    ParserMemory p;
+    switch (ll.first) {
+    case static_cast<int>(Types::MEMORY):
+      p = parse.parse_memory_commands(ll.second);
+      memory_translate.translate_memory_commands(p, input);
+      break;
+    case static_cast<int>(Types::LOGICAL):
+      logic_translate.translate_logic_commands(ll.second);
+      break;
+    default:
+      break;
+    }
   };
   return EXIT_SUCCESS;
 }

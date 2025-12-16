@@ -13,6 +13,7 @@ public:
   inline void translate_memory_commands(ParserMemory command,
                                         const std::string &fname);
 
+
 private:
   std::unordered_map<std::string, std::string> memory_commands_reference = {
       // pop & push

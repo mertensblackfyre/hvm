@@ -7,12 +7,12 @@
 
 class Translator {
 
-  std::ofstream output_file;
-
 protected:
+  inline static std::ofstream output_file{};
   void translate_append_file(std::string_view line) {
     if (output_file.is_open()) {
       output_file << line;
+      output_file.flush();
     } else {
       spdlog::error("Error opening file for appending");
     }
@@ -20,7 +20,7 @@ protected:
   };
 
 public:
-  Translator(const std::string &file_name) {
+  explicit Translator(const std::string &file_name) {
 
     if (output_file.is_open()) {
       spdlog::info("File already open");
@@ -35,9 +35,5 @@ public:
       spdlog::error("Error: ios::badbit");
     }
   }
-
-  ~Translator() {
-    if (output_file.is_open())
-      output_file.close();
-  };
+  virtual ~Translator() = default;
 };
