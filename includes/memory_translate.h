@@ -2,7 +2,7 @@
 
 #include "parser.h"
 #include "spdlog/spdlog.h"
-#include "translate1.h"
+#include "translate.h"
 #include <iostream>
 #include <unordered_map>
 
@@ -12,7 +12,6 @@ public:
   MemoryTranslator(const std::string &file_name) : Translator(file_name) {}
   inline void translate_memory_commands(ParserMemory command,
                                         const std::string &fname);
-
 
 private:
   std::unordered_map<std::string, std::string> memory_commands_reference = {
