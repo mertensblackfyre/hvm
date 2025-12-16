@@ -1,5 +1,6 @@
 #pragma once
 
+#include "constants.h"
 #include "helper.h"
 #include "spdlog/spdlog.h"
 #include <algorithm>
@@ -58,7 +59,8 @@ void Parser::parse_read_file() {
       type = static_cast<int>(Types::MEMORY);
       std::pair<int, std::string> w = {type, ll};
       commands.emplace_back(w);
-    } else if (ll == "add" || ll == "sub") {
+    } else if (std::find(logical_commands.begin(), logical_commands.end(),
+                         ll) != logical_commands.end()) {
       type = static_cast<int>(Types::LOGICAL);
       std::pair<int, std::string> w = {type, ll};
       commands.emplace_back(w);
