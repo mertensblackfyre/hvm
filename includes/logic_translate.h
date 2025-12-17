@@ -28,6 +28,7 @@ void LogicTranslator::translate_logic_commands(const std::string &command) {
   std::string comment = "// " + command + "\n";
   std::string final_asm = logical_commands.at(command);
 
+
   Translator::translate_append_file(comment);
   Translator::translate_append_file(final_asm);
 }
