@@ -147,18 +147,15 @@ const std::unordered_map<std::string, std::string> logical_commands{
            "M=D\n"
            "@SP\n"
            "M=M+1\n"},
-{
-    "not",
-    "@SP\n"
-    "M=M-1\n"
-    "A=M\n"
-    "D=!M\n"
-    "@SP\n"
-    "A=M\n"
-    "M=D\n"
-    "@SP\n"
-    "M=M+1\n"
-}
+    {"not", "@SP\n"
+            "M=M-1\n"
+            "A=M\n"
+            "D=!M\n"
+            "@SP\n"
+            "A=M\n"
+            "M=D\n"
+            "@SP\n"
+            "M=M+1\n"}
 
 };
 
